@@ -41,7 +41,7 @@ class Database:
             (tg_id, )
         ).fetchone()
 
-    def sql_update_ban_user(self, tg_id):
+    def sql_update_ban_user_count(self, tg_id):
         self.cursor.execute(
             sql_quierries.UPDATE_BAN_USER_COUNT_QUERY,
             (tg_id,)

@@ -13,6 +13,7 @@ class Database:
 
         self.connection.execute(sql_quierries.CREATE_USER_TABLE_QUERY)
         self.connection.execute(sql_quierries.CREATE_BAN_USER_TABLE_QUERY)
+        self.connection.execute(sql_quierries.CREATE_PROFILE_TABLE_QUERY)
         self.connection.commit()
 
     def sql_insert_user(self, tg_id, username, first_name, last_name):
@@ -45,5 +46,12 @@ class Database:
         self.cursor.execute(
             sql_quierries.UPDATE_BAN_USER_COUNT_QUERY,
             (tg_id,)
+        )
+        self.connection.commit()
+
+    def sql_insert_profile(self, tg_id, nickname, bio, age, gender, surname, color, photo):
+        self.cursor.execute(
+            sql_quierries.INSERT_PROFILE_QUERY,
+            (None, tg_id, nickname, bio, age, gender, surname, color, photo)
         )
         self.connection.commit()

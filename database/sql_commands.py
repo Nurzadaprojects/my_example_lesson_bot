@@ -49,9 +49,9 @@ class Database:
         )
         self.connection.commit()
 
-    def sql_insert_profile(self, tg_id, nickname, bio, age, gender, surname, color, photo):
+    def sql_insert_profile(self, tg_id, nickname, bio, age, gender, photo):
         self.cursor.execute(
             sql_quierries.INSERT_PROFILE_QUERY,
-            (None, tg_id, nickname, bio, age, gender, surname, color, photo)
+            (None, tg_id, nickname, bio, age, gender, photo)
         )
         self.connection.commit()

@@ -12,8 +12,6 @@ class RegistrationStates(StatesGroup):
     biography = State()
     age = State()
     gender = State()
-    surname = State()
-    color = State()
     photo = State()
 
 
@@ -21,6 +19,13 @@ async def registration_start(call: types.CallbackQuery):
     await bot.send_message(
         chat_id=call.from_user.id,
         text='Send me ur Nickname, please'
+    )
+    await RegistrationStates.nickname.set()
+
+async def update_profile_call(call: types.CallbackQuery):
+    await bot.send_message(
+        chat_id=call.from_user.id,
+        text='Send me ur Nickname, please!!!'
     )
     await RegistrationStates.nickname.set()
 
@@ -84,6 +89,7 @@ async def load_gender(message: types.Message,
     )
     await RegistrationStates.next()
 
+
 async def load_photo(message: types.Message,
                      state: FSMContext):
     db = Database()
@@ -92,6 +98,7 @@ async def load_photo(message: types.Message,
         destination_dir=MEDIA_DESTINATION
     )
     print(path.name)
+
     async with state.proxy() as data:
         db.sql_insert_profile(
             tg_id=message.from_user.id,
@@ -111,32 +118,10 @@ async def load_photo(message: types.Message,
                     bio=data['biography'],
                     age=data['age'],
                     gender=data['gender'],
-                    surname=data['surname'],
-                    color=data['color']
                 ),
                 parse_mode=types.ParseMode.MARKDOWN
             )
             await RegistrationStates.next()
-async def load_surname(message: types.Message,
-                       state: FSMContext):
-    async with state.proxy() as data:
-        data['surname'] = message.text
-        print(data)
-
-    await bot.send_message(
-        chat_id=message.from_user.id,
-        text='Tell me about your fav color, please'
-            )
-    await RegistrationStates.next()
-
-async def load_color(message: types.Message,
-                     state: FSMContext):
-    async with state.proxy() as data:
-        data['color'] = message.text
-        print(data)
-
-
-
 
 
         await bot.send_message(
@@ -151,6 +136,10 @@ def register_registration_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(
         registration_start,
         lambda call: call.data == "registration"
+    )
+    dp.register_callback_query_handler(
+        update_profile_call,
+        lambda call: call.data == "update_profile"
     )
     dp.register_message_handler(
         load_nickname,
@@ -170,16 +159,6 @@ def register_registration_handlers(dp: Dispatcher):
     dp.register_message_handler(
         load_gender,
         state=RegistrationStates.gender,
-        content_types=['text']
-    )
-    dp.register_message_handler(
-        load_surname,
-        state=RegistrationStates.surname,
-        content_types=['text']
-    )
-    dp.register_message_handler(
-        load_color,
-        state=RegistrationStates.color,
         content_types=['text']
     )
     dp.register_message_handler(
